@@ -7,11 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class Customer {
     @Id
@@ -20,4 +16,10 @@ public class Customer {
     private String document;
     private String name;
     private Integer age;
+
+    public Customer(String document, String name, Integer age) {
+        this.document = document;
+        this.name = name;
+        this.age = age;
+    }
 }
