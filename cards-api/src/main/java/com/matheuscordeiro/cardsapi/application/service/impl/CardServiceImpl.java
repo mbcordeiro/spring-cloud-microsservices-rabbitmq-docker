@@ -17,12 +17,12 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional
-    public Card save(Card card) {
-        return cardRepository.save(card);
+    public void save(Card card) {
+        cardRepository.save(card);
     }
 
     @Override
-    public List<Card> getCardsIncomeLessThanEqual(Long income) {
-        return cardRepository.findByIncomeLessThanEqual(BigDecimal.valueOf(income));
+    public List<Card> findCardsByIncomeLessThanEqual(BigDecimal income) {
+        return cardRepository.findByIncomeLessThanEqual(income);
     }
 }

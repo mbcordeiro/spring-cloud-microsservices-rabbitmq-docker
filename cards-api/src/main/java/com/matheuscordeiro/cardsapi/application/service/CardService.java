@@ -2,10 +2,11 @@ package com.matheuscordeiro.cardsapi.application.service;
 
 import com.matheuscordeiro.cardsapi.domain.Card;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CardService {
-    Card save(Card card);
+    void save(Card card);
 
-    List<Card> getCardsIncomeLessThanEqual(Long income);
+    List<Card> findCardsByIncomeLessThanEqual(BigDecimal income);
 }
