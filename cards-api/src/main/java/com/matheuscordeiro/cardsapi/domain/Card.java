@@ -1,4 +1,4 @@
-package domain;
+package com.matheuscordeiro.cardsapi.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
