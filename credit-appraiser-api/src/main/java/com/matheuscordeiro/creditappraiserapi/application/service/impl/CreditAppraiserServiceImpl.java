@@ -2,13 +2,18 @@ package com.matheuscordeiro.creditappraiserapi.application.service.impl;
 
 import com.matheuscordeiro.creditappraiserapi.application.exception.CustomerDataNotFoundException;
 import com.matheuscordeiro.creditappraiserapi.application.service.CreditAppraiserService;
-import com.matheuscordeiro.creditappraiserapi.domain.CustomerCredit;
+import com.matheuscordeiro.creditappraiserapi.domain.*;
 import com.matheuscordeiro.creditappraiserapi.infa.client.CardClient;
 import com.matheuscordeiro.creditappraiserapi.infa.client.CustomerClient;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +33,35 @@ public class CreditAppraiserServiceImpl implements CreditAppraiserService {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public CustomerCreditResponse createCustomerCredit(String document, Long income) throws CustomerDataNotFoundException {
+        try {
+            final var customerData = customerClient.getByDocument(document);
+            final var cardList = cardClient.getCardByIncome(income);
+            final var approvedCardList = Objects.requireNonNull(cardList.getBody()).stream().map(card -> {
+                final var approvedLimit = calculateApprovedLimit(Objects.requireNonNull(customerData.getBody()), card);
+                return getApprovedCard(card, approvedLimit);
+            }).collect(Collectors.toList());
+            return new CustomerCreditResponse(approvedCardList);
+        } catch (FeignException.FeignClientException e) {
+            if (HttpStatus.NOT_FOUND.value() == e.status()) {
+                throw new CustomerDataNotFoundException();
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ApprovedCard getApprovedCard(Card card, BigDecimal approvedLimit) {
+       return ApprovedCard.builder()
+               .card(card.getName()).paymentGroup(card.getPaymentGroup()).limit(approvedLimit).build();
+    }
+
+    private BigDecimal calculateApprovedLimit(CustomerData customerData, Card card) {
+        final var age =  BigDecimal.valueOf(customerData.getAge());
+        final var limit = card.getLimit();
+        final var quotient = age.divide(BigDecimal.TEN, 0, RoundingMode.HALF_UP);
+        return quotient.multiply(limit);
     }
 }

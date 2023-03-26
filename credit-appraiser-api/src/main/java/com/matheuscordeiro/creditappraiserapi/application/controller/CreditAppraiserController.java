@@ -3,12 +3,11 @@ package com.matheuscordeiro.creditappraiserapi.application.controller;
 import com.matheuscordeiro.creditappraiserapi.application.exception.CustomerDataNotFoundException;
 import com.matheuscordeiro.creditappraiserapi.application.service.CreditAppraiserService;
 import com.matheuscordeiro.creditappraiserapi.domain.CustomerCredit;
+import com.matheuscordeiro.creditappraiserapi.domain.CustomerCreditData;
+import com.matheuscordeiro.creditappraiserapi.domain.CustomerCreditResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("credit-appraiser")
@@ -26,6 +25,16 @@ public class CreditAppraiserController {
         try {
             final var customerCredit = creditAppraiserService.retrieveCustomerCredit(document);
             return ResponseEntity.ok(customerCredit);
+        } catch (CustomerDataNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<CustomerCreditResponse> createCustomerCredit(@RequestBody CustomerCreditData customerCreditData) {
+        try {
+            final var customerCreditResponse = creditAppraiserService.createCustomerCredit(customerCreditData.getDocument(), customerCreditData.getIncome());
+            return ResponseEntity.ok(customerCreditResponse);
         } catch (CustomerDataNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
