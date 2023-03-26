@@ -5,5 +5,5 @@ import com.matheuscordeiro.cardsapi.domain.CustomerCard;
 import java.util.List;
 
 public interface CustomerCardService {
-    List<CustomerCard> listCardsByDocument(String document);
+    List<CustomerCard> findListCardByDocument(String document);
 }

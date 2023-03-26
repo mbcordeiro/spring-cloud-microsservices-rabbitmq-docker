@@ -14,7 +14,7 @@ public class CustomerCardServiceImpl implements CustomerCardService {
     private final CustomerCardRepository repository;
 
     @Override
-    public List<CustomerCard> listCardsByDocument(String document) {
+    public List<CustomerCard> findListCardByDocument(String document) {
         return repository.findByDocument(document);
     }
 }
