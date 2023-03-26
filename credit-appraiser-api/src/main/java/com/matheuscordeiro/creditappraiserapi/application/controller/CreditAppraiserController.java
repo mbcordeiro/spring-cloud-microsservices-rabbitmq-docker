@@ -1,5 +1,6 @@
 package com.matheuscordeiro.creditappraiserapi.application.controller;
 
+import com.matheuscordeiro.creditappraiserapi.application.exception.CustomerDataNotFoundException;
 import com.matheuscordeiro.creditappraiserapi.application.service.CreditAppraiserService;
 import com.matheuscordeiro.creditappraiserapi.domain.CustomerCredit;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,12 @@ public class CreditAppraiserController {
     }
 
     @GetMapping(value = "customer-credit", params = "document")
-    public ResponseEntity<CustomerCredit> getCustomerClient(@RequestParam("document") String document) {
-        final var customerCredit = creditAppraiserService.retrieveCustomerCredit(document);
-        return ResponseEntity.ok(customerCredit);
+    public ResponseEntity<CustomerCredit> getCustomerClient(@RequestParam("document") String document) throws CustomerDataNotFoundException {
+        try {
+            final var customerCredit = creditAppraiserService.retrieveCustomerCredit(document);
+            return ResponseEntity.ok(customerCredit);
+        } catch (CustomerDataNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
