@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Bean;
 @EnableDiscoveryClient
 public class ApiGatewayApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ApiGatewayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGatewayApplication.class, args);
+    }
 
-	@Bean
-	public RouteLocator routes(RouteLocatorBuilder builder) {
-		return builder.routes().route(r -> r.path("/customers/**").uri("lb://customers-api")).build();
-	}
+    @Bean
+    public RouteLocator routes(RouteLocatorBuilder builder) {
+        return builder.routes()
+                    .route(r -> r.path("/customers/**").uri("lb://customers-api"))
+                    .route(r -> r.path("/cards/**").uri("lb://cards-api")).build();
+    }
 }
