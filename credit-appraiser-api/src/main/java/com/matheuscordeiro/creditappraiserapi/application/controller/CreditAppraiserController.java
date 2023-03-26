@@ -1,6 +1,6 @@
-package com.matheuscordeiro.creditappraiserapi.application;
+package com.matheuscordeiro.creditappraiserapi.application.controller;
 
-import com.matheuscordeiro.creditappraiserapi.domain.CustomerClient;
+import com.matheuscordeiro.creditappraiserapi.domain.CustomerCredit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ public class CreditAppraiserController {
     }
 
     @GetMapping(value = "customer-credit", params = "document")
-    public ResponseEntity<CustomerClient> retrieveCustomerClient(@RequestParam("document") String document) {
+    public ResponseEntity<CustomerCredit> getCustomerClient(@RequestParam("document") String document) {
         return null;
     }
 }

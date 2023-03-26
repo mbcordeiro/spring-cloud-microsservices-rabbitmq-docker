@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CustomerClient {
+public class CustomerCredit {
     private CustomerData customerData;
     private List<CustomerCard> customerCards;
 }
