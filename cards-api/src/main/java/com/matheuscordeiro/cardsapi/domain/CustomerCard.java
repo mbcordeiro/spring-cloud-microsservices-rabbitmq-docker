@@ -9,10 +9,11 @@ import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@Builder
 public class CustomerCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
