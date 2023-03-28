@@ -2,6 +2,7 @@ package com.matheuscordeiro.creditappraiserapi.application.controller;
 
 import com.matheuscordeiro.creditappraiserapi.application.exception.CustomerDataNotFoundException;
 import com.matheuscordeiro.creditappraiserapi.application.service.CreditAppraiserService;
+import com.matheuscordeiro.creditappraiserapi.domain.CreditIssueRequest;
 import com.matheuscordeiro.creditappraiserapi.domain.CustomerCredit;
 import com.matheuscordeiro.creditappraiserapi.domain.CustomerCreditData;
 import com.matheuscordeiro.creditappraiserapi.domain.CustomerCreditResponse;
@@ -37,6 +38,16 @@ public class CreditAppraiserController {
             return ResponseEntity.ok(customerCreditResponse);
         } catch (CustomerDataNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("requests-card")
+    public ResponseEntity requestCard(@RequestBody CreditIssueRequest creditIssueRequest) {
+        try {
+            final var requestCardProtocol = creditAppraiserService.requestCard(creditIssueRequest);
+            return ResponseEntity.ok(requestCardProtocol);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }
