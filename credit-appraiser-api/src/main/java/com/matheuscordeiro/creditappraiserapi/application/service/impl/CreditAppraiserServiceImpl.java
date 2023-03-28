@@ -5,6 +5,7 @@ import com.matheuscordeiro.creditappraiserapi.application.service.CreditAppraise
 import com.matheuscordeiro.creditappraiserapi.domain.*;
 import com.matheuscordeiro.creditappraiserapi.infa.client.CardClient;
 import com.matheuscordeiro.creditappraiserapi.infa.client.CustomerClient;
+import com.matheuscordeiro.creditappraiserapi.infa.queue.CreditIssuePublisher;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class CreditAppraiserServiceImpl implements CreditAppraiserService {
     private final CustomerClient customerClient;
     private final CardClient cardClient;
+
+    private final CreditIssuePublisher creditIssuePublisher;
 
     @Override
     public CustomerCredit retrieveCustomerCredit(String document) throws CustomerDataNotFoundException {
@@ -50,6 +54,17 @@ public class CreditAppraiserServiceImpl implements CreditAppraiserService {
                 throw new CustomerDataNotFoundException();
             }
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public RequestCardProtocol requestCard(CreditIssueRequest creditIssueRequest) {
+        try {
+            creditIssuePublisher.requestCard(creditIssueRequest);
+            final var protocol = UUID.randomUUID().toString();
+            return new RequestCardProtocol(protocol);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
